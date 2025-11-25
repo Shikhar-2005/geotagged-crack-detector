@@ -1,213 +1,194 @@
 ## geotagged-crack-detector
 Real-time crack detection using Raspberry Pi, USB camera, TensorFlow Lite model (Edge Impulse), GPS (NEO-6M), and Telegram bot notifications. Includes headless mode and geotagged image capture.
-##Geo-Tagged Crack Detection System using Raspberry Pi
 
-A real-time surface crack detection system built using a Raspberry Pi, USB camera, TensorFlow Lite (Edge Impulse) model, NEO-6M GPS module, and Telegram Bot for instant alert notifications.
-Supports GUI mode and headless (no monitor) mode.
+# Geo-Tagged Crack Detection System using Raspberry Pi
 
-Features
+A real-time surface crack detection system built using a Raspberry Pi, USB camera, TensorFlow Lite (Edge Impulse) model, NEO-6M GPS module, and Telegram Bot for instant alert notifications. Supports GUI mode and headless (no monitor) mode.
 
-Real-time crack detection using a quantized TFLite model
+## Features
 
-GPS geotagging using NEO-6M (latitude & longitude)
+  * Real-time crack detection using a quantized TFLite model
+  * GPS geotagging using NEO-6M (latitude & longitude)
+  * Telegram bot alerts with:
+      * Crack image
+      * Prediction confidence
+      * GPS coordinates
+      * Clickable Google Maps link
+  * Automatic FPS counter
+  * Heatmap overlay toggle (press 'a')
+  * Zoom toggle (press 's')
+  * Graceful exit (press 'f')
+  * Runs with or without GUI (headless mode)
 
-Telegram bot alerts with:
+## Hardware Used
 
-Crack image
+| Component | Purpose |
+| :--- | :--- |
+| Raspberry Pi 4 (4GB/8GB) | Main compute board |
+| USB Camera | Real-time imaging |
+| NEO-6M GPS Module | Location acquisition |
+| Jumper Wires (F-F / F-M) | Connections |
+| Powerbank / 5V Supply | Power source |
 
-Prediction confidence
+### GPS Wiring (NEO-6M to Raspberry Pi GPIO)
 
-GPS coordinates
+| GPS Pin | Raspberry Pi Pin | Description |
+| :--- | :--- | :--- |
+| VCC | Pin 2 (5V) | Power |
+| GND | Pin 6 (GND) | Ground |
+| TX | Pin 10 (GPIO15 / RXD) | GPS to Pi |
+| RX | Pin 8 (GPIO14 / TXD) | Pi to GPS |
 
-Clickable Google Maps link
+**Note:** GPS only needs VCC, GND, and TX to work (RX optional). The blue LED on the module blinks when a satellite lock is achieved.
 
-Automatic FPS counter
+## AI Model (Edge Impulse)
 
-Heatmap overlay toggle (press 'a')
+  * **Platform:** Edge Impulse
+  * **Model type:** Image classification
+  * **Input resolution:** 96x96
+  * **Format:** Quantized TensorFlow Lite (.tflite)
+  * **Performance:**
+      * Accuracy: \~90–95% (depends on dataset)
+      * Latency: Fast (optimized TFLite + XNNPACK)
+  * **Dataset Split:**
+      * 80% Training
+      * 20% Testing
 
-Zoom toggle (press 's')
+**Why this approach?**
 
-Graceful exit (press 'f')
+  * Edge Impulse simplifies dataset creation, augmentation, model training, and deployment.
+  * The TFLite model is optimized for low-power devices like the Raspberry Pi.
 
-Runs with or without GUI (headless mode)
+## Project Structure
 
-🧰 Hardware Used
-Component	Purpose
-Raspberry Pi 4 (4GB/8GB)	Main compute board
-USB Camera	Real-time imaging
-NEO-6M GPS Module	Location acquisition
-Jumper Wires (F-F / F-M)	Connections
-Powerbank / 5V Supply	Power source
-🔌 GPS Wiring (NEO-6M → Raspberry Pi GPIO)
-GPS Pin	Raspberry Pi Pin	Description
-VCC	Pin 2 (5V)	Power
-GND	Pin 6 (GND)	Ground
-TX	Pin 10 (GPIO15 / RXD)	GPS → Pi
-RX	Pin 8 (GPIO14 / TXD)	Pi → GPS
-
-GPS only needs VCC, GND, TX to work (RX optional).
-The blue LED blinks when satellite lock is achieved.
-
-🧠 AI Model (Edge Impulse)
-
-Platform: Edge Impulse
-
-Model type: Image classification
-
-Input resolution: 96×96
-
-Format: Quantized TensorFlow Lite (.tflite)
-
-Performance:
-
-Accuracy: ~90–95% (depends on dataset)
-
-Latency: Fast (optimized TFLite + XNNPACK)
-
-Dataset Split
-
-80% Training
-
-20% Testing
-
-Why this approach?
-
-Edge Impulse simplifies dataset creation, augmentation, model training & deployment.
-
-TFLite model is optimized for low-power devices like Raspberry Pi.
-
-📂 Project Structure
+```text
 surface_crack_detection/
 │── model/
 │   └── model_quant.tflite
 │── images/
 │── gps_helper.py
-│── surface_crack_detection_quant.py        ← GUI version
-│── surface_crack_headless.py               ← No-GUI version
+│── surface_crack_detection_quant.py    ← GUI version
+│── surface_crack_headless.py           ← No-GUI version
 │── crack_alert.jpg
 │── crack_alert_headless.jpg
 │── README.md
+```
 
-🧭 GPS Helper Script
+## GPS Helper Script
 
-gps_helper.py continuously reads GPS NMEA data and returns:
+The `gps_helper.py` script continuously reads GPS NMEA data and returns:
 
-latitude
+  * Latitude
+  * Longitude
+  * Fix status
 
-longitude
+This is used to embed coordinates inside detection results.
 
-fix status
+## Telegram Notifications
 
-Used to embed coordinates inside detection results.
+You create a Telegram bot using @BotFather to obtain:
 
-💬 Telegram Notifications
+  * BOT\_TOKEN
+  * CHAT\_ID
 
-You create a Telegram bot using @BotFather, get:
+The system uses Python requests to send:
 
-BOT_TOKEN
+  * Crack alert message
+  * GPS coordinates
+  * Image evidence
+  * Google Maps link
 
-CHAT_ID
+This allows for remote monitoring.
 
-Use Python requests to send:
+## Running the Project
 
-crack alert message
+**1. Activate Virtual Environment**
 
-GPS coordinates
-
-image evidence
-
-Google Maps link
-
-This allows remote monitoring.
-
-▶️ Running the Project
-1. Activate Virtual Environment
+```bash
 source ~/surface_crack/venv/bin/activate
+```
 
-2. Navigate to Project
+**2. Navigate to Project**
+
+```bash
 cd ~/surface_crack/surface_crack_detection
+```
 
-🖥️ GUI Version (with VNC or Monitor)
+### GUI Version (with VNC or Monitor)
+
+```bash
 python3 surface_crack_detection_quant.py
+```
 
+**Window Controls:**
 
-Window Controls:
+| Key | Action |
+| :--- | :--- |
+| a | Toggle Heatmap |
+| s | Toggle Zoom |
+| f | Quit |
 
-Key	Action
-a	Toggle Heatmap
-s	Toggle Zoom
-f	Quit
-🖧 Headless Mode (No Monitor)
+### Headless Mode (No Monitor)
 
-Works via SSH.
+Works via SSH. This version does not show a GUI. Instead, it saves the crack image, sends a Telegram alert, and prints logs in the terminal.
 
+```bash
 python3 surface_crack_headless.py
+```
 
+## Google Maps Link Example
 
-This version does not show GUI
-Instead it:
+The Telegram message includes a link formatted as follows:
 
-saves crack image
-
-sends Telegram alert
-
-prints logs in terminal
-
-🌍 Google Maps Link Example
-
-Telegram message includes:
-
-Crack Detected!
-Confidence: 92.3%
+```text
+Crack Detected! Confidence: 92.3%
 GPS: 12.935607, 77.564345
 https://maps.google.com/?q=12.935607,77.564345
+```
 
-🧪 Testing GPS
+## Testing
+
+**Testing GPS**
+
+```bash
 python3 gps_helper.py
+```
 
+*Example output:*
 
-Example output:
-
+```text
 Waiting for GPS fix…
 12.9356075 77.5643458
+```
 
-🧪 Testing Camera
+**Testing Camera**
+
+```bash
 python3 - << 'EOF'
 import cv2
 for i in range(6):
     print(i, cv2.VideoCapture(i).isOpened())
 EOF
+```
 
-📦 Deployment Notes
+## Deployment Notes
 
-Works with USB cameras (best option)
+  * Works with USB cameras (best option).
+  * Pi Camera Module 3 (NoIR) works only with libcamera, not OpenCV V4L.
+  * Use a powerbank for outdoor use.
+  * GPS needs at least 20–40 seconds under the open sky to acquire a satellite lock.
 
-Pi Camera Module 3 (NoIR) works only with libcamera, not OpenCV V4L
+## Future Improvements
 
-Use powerbank for outdoor use
+  * Cloud logging dashboard.
+  * Use YOLOv8-Nano for more accurate crack segmentation.
+  * Use 4G/LTE module instead of WiFi.
+  * Add battery voltage monitoring.
 
-GPS needs at least 20–40 seconds under open sky for satellite lock
+## This project demonstrates the integration of:
 
-🏁 Future Improvements
-
-Cloud logging dashboard
-
-Use YOLOv8-Nano for more accurate crack segmentation
-
-Use 4G/LTE module instead of WiFi
-
-Add battery voltage monitoring
-
-👥 Team Presentation Summary
-
-This project demonstrates the integration of:
-
-Embedded systems
-
-Computer vision
-
-AI at the edge
-
-Real-time telemetry
-
-IoT (Telegram alerts + GPS)
+  * Embedded systems
+  * Computer vision
+  * AI at the edge
+  * Real-time telemetry
+  * IoT (Telegram alerts + GPS)
