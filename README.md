@@ -142,7 +142,8 @@ python3 surface_crack_headless.py
 The Telegram message includes the following details:
 
 ```text
-Crack Detected! Confidence: 92.3%
+Alert: Crack
+Confidence: 92.3%
 GPS: 27.552644, 76.636611
 ```
 
