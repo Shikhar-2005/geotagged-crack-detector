@@ -27,7 +27,7 @@ def get_gps(timeout=60):
             except Exception:
                 continue
 
-        # You could also use RMC:
+        # Can also use RMC:
         # if line.startswith("$GPRMC"):
         #   ...
 
