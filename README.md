@@ -13,7 +13,6 @@ A real-time surface crack detection system built using a Raspberry Pi, USB camer
       * Crack image
       * Prediction confidence
       * GPS coordinates
-      * Clickable Google Maps link
   * Automatic FPS counter
   * Heatmap overlay toggle (press 'a')
   * Zoom toggle (press 's')
@@ -50,6 +49,9 @@ A real-time surface crack detection system built using a Raspberry Pi, USB camer
   * **Performance:**
       * Accuracy: \~90–95% (depends on dataset)
       * Latency: Fast (optimized TFLite + XNNPACK)
+  * **Datasets:**
+      * Surface Crack Dataset: [https://data.mendeley.com/datasets/5y9wdsg2zt/2](https://data.mendeley.com/datasets/5y9wdsg2zt/2)
+      * COCO-Minitrain dataset: [https://github.com/giddyyupp/coco-minitrain](https://github.com/giddyyupp/coco-minitrain)
   * **Dataset Split:**
       * 80% Training
       * 20% Testing
@@ -96,7 +98,6 @@ The system uses Python requests to send:
   * Crack alert message
   * GPS coordinates
   * Image evidence
-  * Google Maps link
 
 This allows for remote monitoring.
 
@@ -136,14 +137,13 @@ Works via SSH. This version does not show a GUI. Instead, it saves the crack ima
 python3 surface_crack_headless.py
 ```
 
-## Google Maps Link Example
+## Telegram Alert Example
 
-The Telegram message includes a link formatted as follows:
+The Telegram message includes the following details:
 
 ```text
 Crack Detected! Confidence: 92.3%
-GPS: 12.935607, 77.564345
-https://maps.google.com/?q=12.935607,77.564345
+GPS: 27.552644, 76.636611
 ```
 
 ## Testing
@@ -158,7 +158,7 @@ python3 gps_helper.py
 
 ```text
 Waiting for GPS fix…
-12.9356075 77.5643458
+27.552644 76.636611
 ```
 
 **Testing Camera**
