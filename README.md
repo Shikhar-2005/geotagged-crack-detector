@@ -193,3 +193,7 @@ EOF
   * AI at the edge
   * Real-time telemetry
   * IoT (Telegram alerts + GPS)
+
+## License
+
+This project is open-source and available under the [MIT License](LICENSE).
